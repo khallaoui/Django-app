@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.authentication',
     'apps.alertes',
     'apps.dashboard',
+    'stock_debord',
 ]
 
 MIDDLEWARE = [

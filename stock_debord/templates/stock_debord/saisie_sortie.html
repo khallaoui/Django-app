@@ -1,0 +1,59 @@
+{% extends 'stock_debord/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-sign-out-alt me-2"></i>Saisie de Sortie
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Sélectionnez une référence et indiquez le nombre de bacs à sortir du stock.
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.reference.id_for_label }}" class="form-label">
+                                {{ form.reference.label }}
+                            </label>
+                            {{ form.reference }}
+                            {% if form.reference.errors %}
+                                <div class="text-danger">{{ form.reference.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.nombre_bacs.id_for_label }}" class="form-label">
+                                {{ form.nombre_bacs.label }}
+                            </label>
+                            {{ form.nombre_bacs }}
+                            {% if form.nombre_bacs.errors %}
+                                <div class="text-danger">{{ form.nombre_bacs.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">
+                                Vérifiez que le stock est suffisant avant de valider la sortie.
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'stock_debord:dashboard' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-check me-2"></i>Valider la Sortie
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

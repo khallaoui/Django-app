@@ -1,0 +1,150 @@
+{% extends 'stock_debord/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">Stock Magasin Débord</h1>
+
+    <!-- KPI -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Total des bacs</h5>
+                            <h2>{{ total_bacs }}</h2>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-boxes fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Références</h5>
+                            <h2>{{ total_references }}</h2>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-list fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Utilisateur</h5>
+                            <h2>{{ user.username }}</h2>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-user fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Actions</h5>
+                    <div class="btn-group-vertical btn-group-lg d-md-none w-100" role="group">
+                        <a href="{% url 'stock_debord:ajouter_reference' %}" class="btn btn-primary mb-2">
+                            <i class="fas fa-plus me-2"></i>Ajouter Référence
+                        </a>
+                        <a href="{% url 'stock_debord:vider_travee' %}" class="btn btn-warning mb-2">
+                            <i class="fas fa-trash me-2"></i>Vider travée
+                        </a>
+                        <a href="{% url 'stock_debord:historique' %}" class="btn btn-info mb-2">
+                            <i class="fas fa-history me-2"></i>Historique E/S
+                        </a>
+                        <a href="{% url 'stock_debord:exporter_excel' %}" class="btn btn-success mb-2">
+                            <i class="fas fa-file-excel me-2"></i>Exporter Excel
+                        </a>
+                        <a href="{% url 'stock_debord:imprimer_stock' %}" class="btn btn-secondary mb-2">
+                            <i class="fas fa-print me-2"></i>Imprimer
+                        </a>
+                        <a href="{% url 'stock_debord:saisie_sortie' %}" class="btn btn-danger">
+                            <i class="fas fa-sign-out-alt me-2"></i>Valider Sortie
+                        </a>
+                    </div>
+                    <div class="d-none d-md-block">
+                        <a href="{% url 'stock_debord:ajouter_reference' %}" class="btn btn-primary me-2">
+                            <i class="fas fa-plus me-2"></i>Ajouter Référence
+                        </a>
+                        <a href="{% url 'stock_debord:vider_travee' %}" class="btn btn-warning me-2">
+                            <i class="fas fa-trash me-2"></i>Vider travée
+                        </a>
+                        <a href="{% url 'stock_debord:historique' %}" class="btn btn-info me-2">
+                            <i class="fas fa-history me-2"></i>Historique E/S
+                        </a>
+                        <a href="{% url 'stock_debord:exporter_excel' %}" class="btn btn-success me-2">
+                            <i class="fas fa-file-excel me-2"></i>Exporter Excel
+                        </a>
+                        <a href="{% url 'stock_debord:imprimer_stock' %}" class="btn btn-secondary me-2">
+                            <i class="fas fa-print me-2"></i>Imprimer
+                        </a>
+                        <a href="{% url 'stock_debord:saisie_sortie' %}" class="btn btn-danger">
+                            <i class="fas fa-sign-out-alt me-2"></i>Valider Sortie
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barre de recherche -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Chercher une référence..." id="searchInput">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des références -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Stock Actuel</h5>
+                </div>
+                <div class="card-body">
+                    {% include 'stock_debord/partials/table_stock.html' with references=references %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Fonctionnalité de recherche
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    const searchText = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#stockTable tbody tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchText) ? '' : 'none';
+    });
+});
+</script>
+{% endblock %}

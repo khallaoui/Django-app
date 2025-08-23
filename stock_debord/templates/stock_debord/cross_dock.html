@@ -1,0 +1,168 @@
+{% extends 'stock_debord/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-exchange-alt me-2"></i>Cross DOCK - Gestion des Flux Croisés
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exchange-alt me-2"></i>
+                        <strong>Module Cross DOCK</strong> - Gestion des opérations de cross-docking et des flux de marchandises en transit.
+                    </div>
+
+                    <!-- Status Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-truck-loading fa-2x mb-2"></i>
+                                    <h4>0</h4>
+                                    <p class="mb-0">Réceptions en Cours</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-shipping-fast fa-2x mb-2"></i>
+                                    <h4>0</h4>
+                                    <p class="mb-0">Expéditions Prêtes</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-info text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-clock fa-2x mb-2"></i>
+                                    <h4>0</h4>
+                                    <p class="mb-0">En Transit</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-primary">
+                                    <i class="fas fa-truck me-2"></i>Nouvelle Réception
+                                </button>
+                                <button type="button" class="btn btn-success">
+                                    <i class="fas fa-check-circle me-2"></i>Valider Expédition
+                                </button>
+                                <button type="button" class="btn btn-warning">
+                                    <i class="fas fa-route me-2"></i>Planifier Route
+                                </button>
+                                <button type="button" class="btn btn-info">
+                                    <i class="fas fa-chart-line me-2"></i>Rapport Flux
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cross Dock Operations Table -->
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>N° Opération</th>
+                                    <th>Type</th>
+                                    <th>Fournisseur/Client</th>
+                                    <th>Références</th>
+                                    <th>Quantité</th>
+                                    <th>Statut</th>
+                                    <th>Heure Prévue</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for operation in cross_dock_operations %}
+                                <tr>
+                                    <td><strong>{{ operation.numero }}</strong></td>
+                                    <td>
+                                        {% if operation.type == 'reception' %}
+                                            <span class="badge bg-primary">
+                                                <i class="fas fa-arrow-down me-1"></i>Réception
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-arrow-up me-1"></i>Expédition
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ operation.partenaire }}</td>
+                                    <td>{{ operation.references_count }}</td>
+                                    <td>{{ operation.quantite_totale }}</td>
+                                    <td>
+                                        <span class="badge bg-warning">{{ operation.statut }}</span>
+                                    </td>
+                                    <td>{{ operation.heure_prevue|date:"H:i" }}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-success">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-outline-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">
+                                        <i class="fas fa-truck fa-3x mb-3"></i><br>
+                                        <h5>Aucune opération cross-dock en cours</h5>
+                                        <p>Les opérations de cross-docking apparaîtront ici.</p>
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-plus me-2"></i>Planifier Opération
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Planning Timeline -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-calendar-alt me-2"></i>Planning Cross-Dock Aujourd'hui
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="timeline">
+                                        <div class="text-center text-muted">
+                                            <i class="fas fa-calendar-times fa-2x mb-2"></i><br>
+                                            <p>Aucune opération planifiée pour aujourd'hui</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'stock_debord:dashboard' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Retour au Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

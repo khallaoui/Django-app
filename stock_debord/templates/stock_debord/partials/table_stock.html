@@ -1,0 +1,45 @@
+<div class="table-responsive">
+    <table class="table table-striped table-hover" id="stockTable">
+        <thead class="table-dark">
+            <tr>
+                <th>Emplacement SM</th>
+                <th>Référence</th>
+                <th>Nombre de Bac</th>
+                <th>Date entrée</th>
+                <th>Travée débord</th>
+                <th>Code condi</th>
+                <th>Qt pièce/UC</th>
+                <th>Appro</th>
+                <th>Fournisseur</th>
+                <th>CMJ</th>
+                <th>F</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reference in references %}
+            <tr>
+                <td>{{ reference.emplacement_sm }}</td>
+                <td><strong>{{ reference.reference }}</strong></td>
+                <td>
+                    <span class="badge bg-primary">{{ reference.nombre_bacs }}</span>
+                </td>
+                <td>{{ reference.date_entree|date:"d/m/Y H:i" }}</td>
+                <td>{{ reference.travee_debord }}</td>
+                <td>{{ reference.code_condi }}</td>
+                <td>{{ reference.qt_piece_uc }}</td>
+                <td>{{ reference.appro }}</td>
+                <td>{{ reference.fournisseur }}</td>
+                <td>{{ reference.cmj }}</td>
+                <td>{{ reference.f }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="11" class="text-center text-muted">
+                    <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                    Aucune référence en stock
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

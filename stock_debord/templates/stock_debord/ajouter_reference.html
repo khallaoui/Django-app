@@ -1,0 +1,153 @@
+{% extends 'stock_debord/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-plus me-2"></i>Ajouter une Référence
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.emplacement_sm.id_for_label }}" class="form-label">
+                                    {{ form.emplacement_sm.label }}
+                                </label>
+                                {{ form.emplacement_sm }}
+                                {% if form.emplacement_sm.errors %}
+                                    <div class="text-danger">{{ form.emplacement_sm.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.reference.id_for_label }}" class="form-label">
+                                    {{ form.reference.label }}
+                                </label>
+                                {{ form.reference }}
+                                {% if form.reference.errors %}
+                                    <div class="text-danger">{{ form.reference.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.nombre_bacs.id_for_label }}" class="form-label">
+                                    {{ form.nombre_bacs.label }}
+                                </label>
+                                {{ form.nombre_bacs }}
+                                {% if form.nombre_bacs.errors %}
+                                    <div class="text-danger">{{ form.nombre_bacs.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.date_entree.id_for_label }}" class="form-label">
+                                    {{ form.date_entree.label }}
+                                </label>
+                                {{ form.date_entree }}
+                                {% if form.date_entree.errors %}
+                                    <div class="text-danger">{{ form.date_entree.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.travee_debord.id_for_label }}" class="form-label">
+                                    {{ form.travee_debord.label }}
+                                </label>
+                                {{ form.travee_debord }}
+                                {% if form.travee_debord.errors %}
+                                    <div class="text-danger">{{ form.travee_debord.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.code_condi.id_for_label }}" class="form-label">
+                                    {{ form.code_condi.label }}
+                                </label>
+                                {{ form.code_condi }}
+                                {% if form.code_condi.errors %}
+                                    <div class="text-danger">{{ form.code_condi.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.qt_piece_uc.id_for_label }}" class="form-label">
+                                    {{ form.qt_piece_uc.label }}
+                                </label>
+                                {{ form.qt_piece_uc }}
+                                {% if form.qt_piece_uc.errors %}
+                                    <div class="text-danger">{{ form.qt_piece_uc.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.appro.id_for_label }}" class="form-label">
+                                    {{ form.appro.label }}
+                                </label>
+                                {{ form.appro }}
+                                {% if form.appro.errors %}
+                                    <div class="text-danger">{{ form.appro.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.fournisseur.id_for_label }}" class="form-label">
+                                    {{ form.fournisseur.label }}
+                                </label>
+                                {{ form.fournisseur }}
+                                {% if form.fournisseur.errors %}
+                                    <div class="text-danger">{{ form.fournisseur.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.cmj.id_for_label }}" class="form-label">
+                                    {{ form.cmj.label }}
+                                </label>
+                                {{ form.cmj }}
+                                {% if form.cmj.errors %}
+                                    <div class="text-danger">{{ form.cmj.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.f.id_for_label }}" class="form-label">
+                                    {{ form.f.label }}
+                                </label>
+                                {{ form.f }}
+                                {% if form.f.errors %}
+                                    <div class="text-danger">{{ form.f.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'stock_debord:dashboard' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Retour
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

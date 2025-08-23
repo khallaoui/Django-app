@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Débord - Impression</title>
+    <style>
+        @media print {
+            .no-print { display: none; }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .header p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print" style="margin-bottom: 20px;">
+        <button onclick="window.print()" class="btn btn-primary">
+            <i class="fas fa-print"></i> Imprimer
+        </button>
+        <a href="{% url 'stock_debord:dashboard' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+
+    <div class="header">
+        <h1>STELLANTIS DIZ</h1>
+        <h2>Stock Magasin Débord</h2>
+        <p>Édité le {{ "now"|date:"d/m/Y à H:i" }}</p>
+        <p>Total des références: {{ references.count }} | Total des bacs: {{ references|length }}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Emplacement SM</th>
+                <th>Référence</th>
+                <th>Nb Bacs</th>
+                <th>Date entrée</th>
+                <th>Travée</th>
+                <th>Code condi</th>
+                <th>Qt/UC</th>
+                <th>Appro</th>
+                <th>Fournisseur</th>
+                <th>CMJ</th>
+                <th>F</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reference in references %}
+            <tr>
+                <td>{{ reference.emplacement_sm }}</td>
+                <td>{{ reference.reference }}</td>
+                <td>{{ reference.nombre_bacs }}</td>
+                <td>{{ reference.date_entree|date:"d/m/Y" }}</td>
+                <td>{{ reference.travee_debord }}</td>
+                <td>{{ reference.code_condi }}</td>
+                <td>{{ reference.qt_piece_uc }}</td>
+                <td>{{ reference.appro }}</td>
+                <td>{{ reference.fournisseur }}</td>
+                <td>{{ reference.cmj }}</td>
+                <td>{{ reference.f }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="11" style="text-align: center; font-style: italic;">
+                    Aucune référence en stock
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Document généré automatiquement par le système STELLANTIS DIZ</p>
+    </div>
+
+    <script>
+        // Auto-print when page loads (optional)
+        // window.onload = function() { window.print(); }
+    </script>
+</body>
+</html>
