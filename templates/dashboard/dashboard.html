@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Gestion Alertes{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_alerte' %}">
+                            <i class="fas fa-plus-circle"></i> Créer Alerte
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'list_alertes' %}">
+                            <i class="fas fa-list"></i> Liste Alertes
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Dashboard</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Actualiser</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Métriques -->
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2 card-metric">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Alertes En Cours
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ alertes_en_cours }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2 card-metric">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Alertes Livrées
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ alertes_livrees }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2 card-metric">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        FLC Envoyés
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ alertes_flc }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-paper-plane fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-warning shadow h-100 py-2 card-metric">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Total Alertes
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_alertes }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alertes récentes -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Alertes Récentes</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-alerts" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Référence</th>
+                                    <th>Zone Kit</th>
+                                    <th>Bacs Restants</th>
+                                    <th>Statut</th>
+                                    <th>Date Création</th>
+                                    <th>Créateur</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for alerte in alertes_recentes %}
+                                <tr>
+                                    <td>{{ alerte.reference }}</td>
+                                    <td>{{ alerte.zone_kit }}</td>
+                                    <td>{{ alerte.nombre_bacs }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if alerte.statut == 'en_cours' %}warning{% elif alerte.statut == 'livre' %}success{% elif alerte.statut == 'flc' %}info{% else %}secondary{% endif %}">
+                                            {{ alerte.get_statut_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ alerte.date_creation|date:"d/m/Y H:i" }}</td>
+                                    <td>{{ alerte.createur.username }}</td>
+                                    <td>
+                                        {% if alerte.statut == 'en_cours' %}
+                                        <button class="btn btn-sm btn-success btn-update-status btn-status" 
+                                                data-alerte-id="{{ alerte.id }}" 
+                                                data-status="livre">
+                                            Livré
+                                        </button>
+                                        <button class="btn btn-sm btn-info btn-update-status btn-status" 
+                                                data-alerte-id="{{ alerte.id }}" 
+                                                data-status="flc">
+                                            FLC
+                                        </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">Aucune alerte récente</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-refresh des métriques toutes les 30 secondes
+    setInterval(function() {
+        $('.metric-card').load(window.location.pathname + ' .metric-card > *');
+    }, 30000);
+</script>
+{% endblock %}
