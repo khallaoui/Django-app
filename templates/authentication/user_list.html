@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestion des Utilisateurs{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-users"></i> Gestion des Utilisateurs</h2>
+            <p class="text-muted">Créer, modifier et supprimer les comptes utilisateurs</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'auth:user_create' %}" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Nouvel Utilisateur
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtres et recherche -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" 
+                           class="form-control" 
+                           name="search" 
+                           placeholder="Rechercher par nom, email, username..." 
+                           value="{{ search_query }}">
+                </div>
+                <div class="col-md-4">
+                    <select name="role" class="form-select">
+                        <option value="">Tous les rôles</option>
+                        {% for value, label in role_choices %}
+                        <option value="{{ value }}" {% if role_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-secondary w-100">
+                        <i class="fas fa-search"></i> Filtrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Liste des utilisateurs -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Téléphone</th>
+                            <th>Statut</th>
+                            <th>Date de création</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user_obj in users %}
+                        <tr>
+                            <td>
+                                <strong>{{ user_obj.username }}</strong><br>
+                                <small class="text-muted">{{ user_obj.first_name }} {{ user_obj.last_name }}</small>
+                            </td>
+                            <td>{{ user_obj.email }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if user_obj.role == 'admin' %}bg-danger
+                                    {% elif user_obj.role == 'gestionnaire' %}bg-warning
+                                    {% else %}bg-info{% endif %}">
+                                    {{ user_obj.get_role_display }}
+                                </span>
+                            </td>
+                            <td>{{ user_obj.phone|default:"-" }}</td>
+                            <td>
+                                {% if user_obj.is_active %}
+                                <span class="badge bg-success">Actif</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Inactif</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user_obj.created_at|date:"d/m/Y H:i" }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'auth:user_edit' user_obj.id %}" 
+                                   class="btn btn-sm btn-outline-primary" 
+                                   title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {% if user_obj.id != user.id %}
+                                <a href="{% url 'auth:user_delete' user_obj.id %}" 
+                                   class="btn btn-sm btn-outline-danger" 
+                                   title="Supprimer">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="fas fa-info-circle"></i> Aucun utilisateur trouvé
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                    <h5 class="card-title text-muted">Total Utilisateurs</h5>
+                    <h2 class="text-primary mb-0">{{ total_users }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-user fa-2x text-info mb-2"></i>
+                    <h5 class="card-title text-muted">Consultants</h5>
+                    <h2 class="text-info mb-0">{{ consultants_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-user-tie fa-2x text-warning mb-2"></i>
+                    <h5 class="card-title text-muted">Gestionnaires</h5>
+                    <h2 class="text-warning mb-0">{{ gestionnaires_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-user-shield fa-2x text-danger mb-2"></i>
+                    <h5 class="card-title text-muted">Administrateurs</h5>
+                    <h2 class="text-danger mb-0">{{ admins_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}

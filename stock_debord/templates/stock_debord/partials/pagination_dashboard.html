@@ -1,0 +1,108 @@
+<!-- Modern Pagination Component for STELLANTIS DIZ Dashboard -->
+<div class="modern-pagination-container">
+    <div class="pagination-wrapper">
+        <!-- Previous Button -->
+        <div class="pagination-button-group">
+            {% if page_obj.has_previous %}
+                <a href="?{% if search_reference and search_reference != 'None' %}search_reference={{ search_reference }}&{% endif %}{% if date_debut %}date_debut={{ date_debut }}&{% endif %}{% if date_fin %}date_fin={{ date_fin }}&{% endif %}page={{ page_obj.previous_page_number }}" 
+                   class="pagination-btn pagination-btn-prev">
+                    <i class="fas fa-chevron-left me-1"></i>
+                    <span class="d-none d-sm-inline">Précédent</span>
+                </a>
+            {% else %}
+                <span class="pagination-btn pagination-btn-prev disabled">
+                    <i class="fas fa-chevron-left me-1"></i>
+                    <span class="d-none d-sm-inline">Précédent</span>
+                </span>
+            {% endif %}
+        </div>
+
+        <!-- Page Numbers -->
+        <div class="pagination-pages">
+            {% if page_obj.paginator.num_pages <= 7 %}
+                <!-- Show all pages if 7 or fewer -->
+                {% for page_num in page_obj.paginator.page_range %}
+                    {% if page_num == page_obj.number %}
+                        <span class="pagination-page pagination-page-active">{{ page_num }}</span>
+                    {% else %}
+                        <a href="?{% if search_reference and search_reference != 'None' %}search_reference={{ search_reference }}&{% endif %}{% if date_debut %}date_debut={{ date_debut }}&{% endif %}{% if date_fin %}date_fin={{ date_fin }}&{% endif %}page={{ page_num }}" 
+                           class="pagination-page">{{ page_num }}</a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <!-- Smart pagination for many pages -->
+                {% if page_obj.number <= 4 %}
+                    <!-- Show first 5 pages + ellipsis + last page -->
+                    {% for page_num in page_obj.paginator.page_range|slice:":5" %}
+                        {% if page_num == page_obj.number %}
+                            <span class="pagination-page pagination-page-active">{{ page_num }}</span>
+                        {% else %}
+                            <a href="?{% if search_reference and search_reference != 'None' %}search_reference={{ search_reference }}&{% endif %}{% if date_debut %}date_debut={{ date_debut }}&{% endif %}{% if date_fin %}date_fin={{ date_fin }}&{% endif %}page={{ page_num }}" 
+                               class="pagination-page">{{ page_num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    <span class="pagination-ellipsis">...</span>
+                    <a href="?{% if search_reference and search_reference != 'None' %}search_reference={{ search_reference }}&{% endif %}{% if date_debut %}date_debut={{ date_debut }}&{% endif %}{% if date_fin %}date_fin={{ date_fin }}&{% endif %}page={{ page_obj.paginator.num_pages }}" 
+                       class="pagination-page">{{ page_obj.paginator.num_pages }}</a>
+                {% elif page_obj.number >= page_obj.paginator.num_pages|add:"-3" %}
+                    <!-- Show first page + ellipsis + last 5 pages -->
+                    <a href="?{% if search_reference and search_reference != 'None' %}search_reference={{ search_reference }}&{% endif %}{% if date_debut %}date_debut={{ date_debut }}&{% endif %}{% if date_fin %}date_fin={{ date_fin }}&{% endif %}page=1" 
+                       class="pagination-page">1</a>
+                    <span class="pagination-ellipsis">...</span>
+                    {% for page_num in page_obj.paginator.page_range|slice:"-5:" %}
+                        {% if page_num == page_obj.number %}
+                            <span class="pagination-page pagination-page-active">{{ page_num }}</span>
+                        {% else %}
+                            <a href="?{% if search_reference and search_reference != 'None' %}search_reference={{ search_reference }}&{% endif %}{% if date_debut %}date_debut={{ date_debut }}&{% endif %}{% if date_fin %}date_fin={{ date_fin }}&{% endif %}page={{ page_num }}" 
+                               class="pagination-page">{{ page_num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <!-- Show first + ellipsis + current-1, current, current+1 + ellipsis + last -->
+                    <a href="?{% if search_reference and search_reference != 'None' %}search_reference={{ search_reference }}&{% endif %}{% if date_debut %}date_debut={{ date_debut }}&{% endif %}{% if date_fin %}date_fin={{ date_fin }}&{% endif %}page=1" 
+                       class="pagination-page">1</a>
+                    <span class="pagination-ellipsis">...</span>
+                    {% for page_num in page_obj.paginator.page_range %}
+                        {% if page_num >= page_obj.number|add:"-1" and page_num <= page_obj.number|add:"1" %}
+                            {% if page_num == page_obj.number %}
+                                <span class="pagination-page pagination-page-active">{{ page_num }}</span>
+                            {% else %}
+                                <a href="?{% if search_reference and search_reference != 'None' %}search_reference={{ search_reference }}&{% endif %}{% if date_debut %}date_debut={{ date_debut }}&{% endif %}{% if date_fin %}date_fin={{ date_fin }}&{% endif %}page={{ page_num }}" 
+                                   class="pagination-page">{{ page_num }}</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    <span class="pagination-ellipsis">...</span>
+                    <a href="?{% if search_reference and search_reference != 'None' %}search_reference={{ search_reference }}&{% endif %}{% if date_debut %}date_debut={{ date_debut }}&{% endif %}{% if date_fin %}date_fin={{ date_fin }}&{% endif %}page={{ page_obj.paginator.num_pages }}" 
+                       class="pagination-page">{{ page_obj.paginator.num_pages }}</a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <!-- Next Button -->
+        <div class="pagination-button-group">
+            {% if page_obj.has_next %}
+                <a href="?{% if search_reference and search_reference != 'None' %}search_reference={{ search_reference }}&{% endif %}{% if date_debut %}date_debut={{ date_debut }}&{% endif %}{% if date_fin %}date_fin={{ date_fin }}&{% endif %}page={{ page_obj.next_page_number }}" 
+                   class="pagination-btn pagination-btn-next">
+                    <span class="d-none d-sm-inline">Suivant</span>
+                    <i class="fas fa-chevron-right ms-1"></i>
+                </a>
+            {% else %}
+                <span class="pagination-btn pagination-btn-next disabled">
+                    <span class="d-none d-sm-inline">Suivant</span>
+                    <i class="fas fa-chevron-right ms-1"></i>
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Page Info -->
+    <div class="pagination-info">
+        <div class="pagination-info-content">
+            <i class="fas fa-info-circle me-2"></i>
+            <span>Page <strong>{{ page_obj.number }}</strong> sur <strong>{{ page_obj.paginator.num_pages }}</strong></span>
+            <span class="pagination-info-separator">•</span>
+            <span>{{ page_obj.paginator.count }} références au total</span>
+        </div>
+    </div>
+</div>

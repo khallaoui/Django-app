@@ -33,10 +33,3 @@ class SortieForm(forms.Form):
         widget=forms.NumberInput(attrs={'class': 'form-control'})
     )
 
-
-class ViderTraveeForm(forms.Form):
-    travee = forms.ModelChoiceField(
-        queryset=Travee.objects.all(), 
-        label="Travée à vider",
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )

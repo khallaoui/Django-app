@@ -1,0 +1,46 @@
+<!-- Pagination Component -->
+<div class="pagination-container">
+    <div class="pagination-nav">
+        {% if page_obj.has_previous %}
+            <!-- Previous Button - Text Version -->
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" class="previous">
+                &laquo; Précédent
+            </a>
+            
+            <!-- Previous Button - Round Version (uncomment to use) -->
+            <!-- <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" class="previous round">
+                &#8249;
+            </a> -->
+        {% else %}
+            <span class="previous disabled">&laquo; Précédent</span>
+        {% endif %}
+        
+        <!-- Page Info -->
+        <span class="pagination-info">
+            Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+        </span>
+        
+        {% if page_obj.has_next %}
+            <!-- Next Button - Text Version -->
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" class="next">
+                Suivant &raquo;
+            </a>
+            
+            <!-- Next Button - Round Version (uncomment to use) -->
+            <!-- <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" class="next round">
+                &#8250;
+            </a> -->
+        {% else %}
+            <span class="next disabled">Suivant &raquo;</span>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Alternative Color Scheme (add 'alt' class to pagination-nav div above) -->
+<!-- 
+<div class="pagination-container">
+    <div class="pagination-nav alt">
+        <!-- Same content as above -->
+    </div>
+</div>
+-->

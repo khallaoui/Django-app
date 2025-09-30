@@ -1,0 +1,415 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4 px-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10 col-lg-11">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0"><i class="fas fa-user-circle me-3"></i> Mon Profil</h2>
+                    <p class="mb-0 mt-2 opacity-75">Gestion de votre compte et informations personnelles</p>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-lg-4 col-md-5 text-center">
+                            <div class="profile-avatar mb-4">
+                                <i class="fas fa-user-circle fa-10x 
+                                    {% if user.role == 'admin' %}text-danger
+                                    {% elif user.role == 'gestionnaire' %}text-warning
+                                    {% else %}text-info{% endif %}"></i>
+                            </div>
+                            <h3 class="mb-4 fw-bold">{{ user.username }}</h3>
+                            
+                            <div class="mb-4">
+                                <span class="badge 
+                                    {% if user.role == 'admin' %}bg-danger
+                                    {% elif user.role == 'gestionnaire' %}bg-warning text-dark
+                                    {% else %}bg-info{% endif %} badge-lg fs-6 px-4 py-3">
+                                    <i class="fas 
+                                        {% if user.role == 'admin' %}fa-user-shield
+                                        {% elif user.role == 'gestionnaire' %}fa-user-cog
+                                        {% else %}fa-user{% endif %} me-2"></i>
+                                    {{ user.get_role_display }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-8 col-md-7">
+                            <h4 class="mb-4 fw-bold">
+                                <i class="fas fa-id-card text-primary me-2"></i>Informations personnelles
+                            </h4>
+                            
+                            <table class="table table-hover table-lg">
+                                <tbody>
+                                    <tr>
+                                        <th width="35%" class="align-middle py-3">
+                                            <i class="fas fa-user text-primary me-2"></i>Nom d'utilisateur
+                                        </th>
+                                        <td class="align-middle py-3">
+                                            <strong class="fs-5">{{ user.username }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle py-3">
+                                            <i class="fas fa-id-card text-primary me-2"></i>Nom complet
+                                        </th>
+                                        <td class="align-middle py-3">
+                                            {% if user.first_name or user.last_name %}
+                                                <span class="fs-5">{{ user.first_name }} {{ user.last_name }}</span>
+                                            {% else %}
+                                                <span class="text-muted fs-5">Non renseigné</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle py-3">
+                                            <i class="fas fa-envelope text-primary me-2"></i>Email
+                                        </th>
+                                        <td class="align-middle py-3">
+                                            <a href="mailto:{{ user.email }}" class="fs-5 text-decoration-none">{{ user.email }}</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle py-3">
+                                            <i class="fas fa-phone text-primary me-2"></i>Téléphone
+                                        </th>
+                                        <td class="align-middle py-3">
+                                            {% if user.phone %}
+                                                <span class="fs-5">{{ user.phone }}</span>
+                                            {% else %}
+                                                <span class="text-muted fs-5">Non renseigné</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle py-3">
+                                            <i class="fas fa-calendar-plus text-primary me-2"></i>Date d'inscription
+                                        </th>
+                                        <td class="align-middle py-3">
+                                            <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                                                {{ user.created_at|date:"d/m/Y à H:i" }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle py-3">
+                                            <i class="fas fa-clock text-primary me-2"></i>Dernière connexion
+                                        </th>
+                                        <td class="align-middle py-3">
+                                            {% if user.last_login %}
+                                                <span class="badge bg-success fs-6 px-3 py-2">
+                                                    {{ user.last_login|date:"d/m/Y à H:i" }}
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-info fs-6 px-3 py-2">Première connexion</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <hr class="my-5">
+
+                            <h4 class="mb-4 fw-bold">
+                                <i class="fas fa-shield-alt text-primary me-2"></i>Permissions du rôle
+                            </h4>
+                            
+                            {% if user.role == 'consultant' %}
+                            <div class="alert alert-info p-4">
+                                <h5 class="alert-heading mb-3">
+                                    <i class="fas fa-user me-2"></i>Consultant (Opérateur / Cariste)
+                                </h5>
+                                <p class="mb-0 fs-5">Responsable des entrées et sorties des pièces</p>
+                            </div>
+                            <div class="row g-4">
+                                <div class="col-lg-6">
+                                    <div class="border rounded p-4 h-100">
+                                        <h5 class="text-success mb-4">
+                                            <i class="fas fa-check-circle me-2"></i>Vous pouvez :
+                                        </h5>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-3 fs-5">
+                                                <i class="fas fa-check text-success me-3"></i>Consulter le stock
+                                            </li>
+                                            <li class="mb-3 fs-5">
+                                                <i class="fas fa-check text-success me-3"></i>Ajouter des références (Entrées)
+                                            </li>
+                                            <li class="mb-3 fs-5">
+                                                <i class="fas fa-check text-success me-3"></i>Effectuer des sorties de pièces
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="border rounded p-4 h-100">
+                                        <h5 class="text-muted mb-4">
+                                            <i class="fas fa-times-circle me-2"></i>Restreint :
+                                        </h5>
+                                        <ul class="list-unstyled text-muted">
+                                            <li class="mb-3 fs-5">
+                                                <i class="fas fa-times me-3"></i>Historique complet
+                                            </li>
+                                            <li class="mb-3 fs-5">
+                                                <i class="fas fa-times me-3"></i>Exports Excel
+                                            </li>
+                                            <li class="mb-3 fs-5">
+                                                <i class="fas fa-times me-3"></i>Gestion des références
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {% elif user.role == 'gestionnaire' %}
+                            <div class="alert alert-warning">
+                                <h6 class="alert-heading">
+                                    <i class="fas fa-user-cog me-2"></i>Gestionnaire de Magasin
+                                </h6>
+                                <p class="mb-2"><small>Gestion globale et contrôle des mouvements entrepreneur ↔ client</small></p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-success"><i class="fas fa-check-circle me-2"></i>Permissions complètes :</h6>
+                                    <ul class="list-unstyled ms-3">
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Toutes permissions du Consultant</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Gérer les références</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Historique complet</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Exports Excel</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled ms-3">
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Gérer les zones/travées</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Superviser les opérations</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Extraire les mouvements</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Imprimer les rapports</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            {% elif user.role == 'admin' %}
+                            <div class="alert alert-danger">
+                                <h6 class="alert-heading">
+                                    <i class="fas fa-user-shield me-2"></i>Administrateur
+                                </h6>
+                                <p class="mb-2"><small>Accès complet au système et gestion des utilisateurs</small></p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-success"><i class="fas fa-check-circle me-2"></i>Accès total :</h6>
+                                    <ul class="list-unstyled ms-3">
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Toutes permissions du Gestionnaire</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Créer des utilisateurs</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Modifier des utilisateurs</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled ms-3">
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Supprimer des utilisateurs</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Django Admin</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Paramètres système</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="mt-5 d-grid gap-3 d-md-flex">
+                                <a href="{% url 'auth:change_password' %}" class="btn btn-primary btn-lg px-5 py-3">
+                                    <i class="fas fa-key me-2"></i>Changer mon mot de passe
+                                </a>
+                                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-lg px-5 py-3">
+                                    <i class="fas fa-arrow-left me-2"></i>Retour au tableau de bord
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 2rem;
+    }
+    
+    .card-header h2 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 2rem;
+    }
+    
+    .card-header p {
+        font-size: 1.1rem;
+    }
+    
+    .badge-lg {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .profile-avatar {
+        padding: 40px 30px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .profile-avatar i {
+        filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
+    }
+    
+    .table-lg th,
+    .table-lg td {
+        padding: 1.25rem;
+        font-size: 1.1rem;
+    }
+    
+    .fs-5 {
+        font-size: 1.25rem !important;
+    }
+    
+    .fs-6 {
+        font-size: 1.1rem !important;
+    }
+    
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+        padding: 1rem;
+    }
+    
+    .table td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f1f3f5;
+        transition: all 0.3s ease;
+    }
+    
+    .alert {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .border.rounded {
+        border: 2px solid #e9ecef !important;
+        border-radius: 15px !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .border.rounded:hover {
+        border-color: #dee2e6 !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .alert-info {
+        background: linear-gradient(135deg, #e0f7ff 0%, #b3e5fc 100%);
+        color: #01579b;
+    }
+    
+    .alert-warning {
+        background: linear-gradient(135deg, #fff9e6 0%, #ffe082 100%);
+        color: #f57f17;
+    }
+    
+    .alert-danger {
+        background: linear-gradient(135deg, #ffebee 0%, #ef9a9a 100%);
+        color: #b71c1c;
+    }
+    
+    .alert-heading {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-outline-secondary {
+        border: 2px solid #6c757d;
+        font-weight: 600;
+    }
+    
+    .btn-outline-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    hr {
+        margin: 2rem 0;
+        border-top: 2px solid #e9ecef;
+    }
+    
+    h5 {
+        font-weight: 700;
+        color: #343a40;
+    }
+    
+    h6 {
+        font-weight: 600;
+    }
+    
+    .text-success {
+        color: #28a745 !important;
+    }
+    
+    .badge.bg-light {
+        border: 1px solid #dee2e6;
+    }
+    
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 1rem;
+        }
+        
+        .table th, .table td {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock %}

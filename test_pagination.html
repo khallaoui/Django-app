@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Pagination</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Test des Boutons de Pagination</h1>
+    
+    <div class="test-section">
+        <h3>Style 1: Boutons Texte</h3>
+        <div class="pagination-container">
+            <div class="pagination-nav">
+                <a href="#" class="previous">&laquo; Précédent</a>
+                <span class="pagination-info">Page 2 sur 5</span>
+                <a href="#" class="next">Suivant &raquo;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>Style 2: Boutons Ronds</h3>
+        <div class="pagination-container">
+            <div class="pagination-nav">
+                <a href="#" class="previous round">&#8249;</a>
+                <span class="pagination-info">Page 2 sur 5</span>
+                <a href="#" class="next round">&#8250;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>Style 3: État Désactivé</h3>
+        <div class="pagination-container">
+            <div class="pagination-nav">
+                <span class="previous disabled">&laquo; Précédent</span>
+                <span class="pagination-info">Page 1 sur 5</span>
+                <a href="#" class="next">Suivant &raquo;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>Style 4: Schéma de Couleurs Alternatif</h3>
+        <div class="pagination-container">
+            <div class="pagination-nav alt">
+                <a href="#" class="previous">&laquo; Précédent</a>
+                <span class="pagination-info">Page 2 sur 5</span>
+                <a href="#" class="next">Suivant &raquo;</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add some basic interactivity for testing
+        document.querySelectorAll('.pagination-nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Bouton cliqué: ' + this.textContent.trim());
+            });
+        });
+    </script>
+</body>
+</html>

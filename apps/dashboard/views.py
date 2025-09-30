@@ -1,33 +1,37 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from apps.alertes.models import Alerte
-from django.db.models import Count
+from stock_debord.models import Reference, Historique, Travee
+from django.db.models import Count, Sum
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 @login_required
 def dashboard_view(request):
-    # Statistiques des alertes
-    total_alertes = Alerte.objects.count()
-    alertes_en_cours = Alerte.objects.filter(statut='en_cours').count()
-    alertes_livrees = Alerte.objects.filter(statut='livre').count()
-    alertes_flc = Alerte.objects.filter(statut='flc').count()
-    alertes_cloturees = Alerte.objects.filter(statut='cloture').count()
+    # Statistiques du stock
+    total_references = Reference.objects.count()
+    total_bacs = Reference.objects.aggregate(total=Sum('nombre_bacs'))['total'] or 0
     
-    # Alertes récentes
-    alertes_recentes = Alerte.objects.all()[:10]
+    # Travées occupées
+    travees_occupees = Reference.objects.exclude(travee_debord='').values('travee_debord').distinct().count()
     
-    # Statistiques par zone
-    stats_zones = Alerte.objects.values('zone_kit').annotate(
-        total=Count('id')
-    ).order_by('-total')[:5]
+    # Mouvements d'aujourd'hui
+    aujourdhui = timezone.now().date()
+    mouvements_aujourdhui = Historique.objects.filter(date_action__date=aujourdhui).count()
+    
+    # Références récentes
+    references = Reference.objects.all()[:10]
     
     context = {
-        'total_alertes': total_alertes,
-        'alertes_en_cours': alertes_en_cours,
-        'alertes_livrees': alertes_livrees,
-        'alertes_flc': alertes_flc,
-        'alertes_cloturees': alertes_cloturees,
-        'alertes_recentes': alertes_recentes,
-        'stats_zones': stats_zones,
+        'total_references': total_references,
+        'total_bacs': total_bacs,
+        'travees_occupees': travees_occupees,
+        'mouvements_aujourdhui': mouvements_aujourdhui,
+        'references': references,
     }
     
     return render(request, 'dashboard/dashboard.html', context)
+
+@login_required
+def next_previous_demo_view(request):
+    """Demo page for next and previous buttons tutorial"""
+    return render(request, 'next_previous_demo.html')

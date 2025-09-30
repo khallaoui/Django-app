@@ -1,0 +1,193 @@
+{% extends 'stock_debord/base.html' %}
+{% load static %}
+
+{% block title %}Démo des Boutons de Pagination{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-pagination me-2"></i>
+                        Démo des Boutons de Pagination
+                    </h4>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- Style 1: Basic Text Buttons -->
+                    <div class="mb-5">
+                        <h5>Style 1: Boutons Texte Basiques</h5>
+                        <p class="text-muted">Boutons avec texte "Précédent" et "Suivant"</p>
+                        <div class="pagination-container">
+                            <div class="pagination-nav">
+                                <a href="#" class="previous">&laquo; Précédent</a>
+                                <span class="pagination-info">Page 2 sur 5</span>
+                                <a href="#" class="next">Suivant &raquo;</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Style 2: Round Buttons -->
+                    <div class="mb-5">
+                        <h5>Style 2: Boutons Ronds</h5>
+                        <p class="text-muted">Boutons avec des symboles fléchés dans des cercles</p>
+                        <div class="pagination-container">
+                            <div class="pagination-nav">
+                                <a href="#" class="previous round">&#8249;</a>
+                                <span class="pagination-info">Page 2 sur 5</span>
+                                <a href="#" class="next round">&#8250;</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Style 3: Alternative Color Scheme -->
+                    <div class="mb-5">
+                        <h5>Style 3: Schéma de Couleurs Alternatif</h5>
+                        <p class="text-muted">Utilise les couleurs primaires du thème</p>
+                        <div class="pagination-container">
+                            <div class="pagination-nav alt">
+                                <a href="#" class="previous">&laquo; Précédent</a>
+                                <span class="pagination-info">Page 2 sur 5</span>
+                                <a href="#" class="next">Suivant &raquo;</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Style 4: Disabled State -->
+                    <div class="mb-5">
+                        <h5>Style 4: État Désactivé</h5>
+                        <p class="text-muted">Boutons désactivés (première/dernière page)</p>
+                        <div class="pagination-container">
+                            <div class="pagination-nav">
+                                <span class="previous disabled">&laquo; Précédent</span>
+                                <span class="pagination-info">Page 1 sur 5</span>
+                                <a href="#" class="next">Suivant &raquo;</a>
+                            </div>
+                        </div>
+                        <div class="pagination-container mt-3">
+                            <div class="pagination-nav">
+                                <a href="#" class="previous">&laquo; Précédent</a>
+                                <span class="pagination-info">Page 5 sur 5</span>
+                                <span class="next disabled">Suivant &raquo;</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Style 5: Mixed Styles -->
+                    <div class="mb-5">
+                        <h5>Style 5: Styles Mixtes</h5>
+                        <p class="text-muted">Combinaison de différents styles</p>
+                        <div class="pagination-container">
+                            <div class="pagination-nav">
+                                <a href="#" class="previous round">&#8249;</a>
+                                <span class="pagination-info">Page 3 sur 10</span>
+                                <a href="#" class="next">Suivant &raquo;</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Code Examples -->
+                    <div class="mt-5">
+                        <h5>Exemples de Code</h5>
+                        <div class="accordion" id="codeExamples">
+                            
+                            <!-- HTML Example -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="htmlExample">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#htmlCode" aria-expanded="true">
+                                        Exemple HTML
+                                    </button>
+                                </h2>
+                                <div id="htmlCode" class="accordion-collapse collapse show" data-bs-parent="#codeExamples">
+                                    <div class="accordion-body">
+                                        <pre><code>&lt;!-- Boutons Texte --&gt;
+&lt;div class="pagination-container"&gt;
+    &lt;div class="pagination-nav"&gt;
+        &lt;a href="#" class="previous"&gt;&amp;laquo; Précédent&lt;/a&gt;
+        &lt;span class="pagination-info"&gt;Page 2 sur 5&lt;/span&gt;
+        &lt;a href="#" class="next"&gt;Suivant &amp;raquo;&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Boutons Ronds --&gt;
+&lt;div class="pagination-container"&gt;
+    &lt;div class="pagination-nav"&gt;
+        &lt;a href="#" class="previous round"&gt;&amp;#8249;&lt;/a&gt;
+        &lt;span class="pagination-info"&gt;Page 2 sur 5&lt;/span&gt;
+        &lt;a href="#" class="next round"&gt;&amp;#8250;&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Django Template Example -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="djangoExample">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#djangoCode">
+                                        Exemple Django Template
+                                    </button>
+                                </h2>
+                                <div id="djangoCode" class="accordion-collapse collapse" data-bs-parent="#codeExamples">
+                                    <div class="accordion-body">
+                                        <pre><code>{% raw %}{% if is_paginated %}
+    {% include 'stock_debord/partials/pagination.html' %}
+{% endif %}{% endraw %}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CSS Customization -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="cssExample">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cssCode">
+                                        Personnalisation CSS
+                                    </button>
+                                </h2>
+                                <div id="cssCode" class="accordion-collapse collapse" data-bs-parent="#codeExamples">
+                                    <div class="accordion-body">
+                                        <pre><code>/* Couleurs personnalisées */
+.pagination-nav .next {
+    background-color: #your-color;
+    color: white;
+}
+
+.pagination-nav .previous {
+    background-color: #your-color;
+    color: black;
+}
+
+/* Taille personnalisée */
+.pagination-nav a {
+    padding: 12px 20px; /* Plus grand */
+    font-size: 1.1rem;
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Usage Instructions -->
+                    <div class="mt-5">
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>Instructions d'utilisation</h6>
+                            <ul class="mb-0">
+                                <li>Les styles sont déjà intégrés dans votre fichier <code>static/css/style.css</code></li>
+                                <li>Utilisez le composant <code>pagination.html</code> dans vos templates Django</li>
+                                <li>Les boutons s'adaptent automatiquement aux états (actif/désactivé)</li>
+                                <li>Le composant préserve automatiquement les paramètres de recherche dans l'URL</li>
+                                <li>Les styles sont responsives et s'adaptent aux écrans mobiles</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

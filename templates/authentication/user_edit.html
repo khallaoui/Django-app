@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Modifier l'utilisateur{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-user-edit"></i> Modifier l'utilisateur: {{ user_obj.username }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="username" class="form-label">Nom d'utilisateur *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="username" 
+                                       name="username" 
+                                       value="{{ user_obj.username }}" 
+                                       required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" 
+                                       class="form-control" 
+                                       id="email" 
+                                       name="email" 
+                                       value="{{ user_obj.email }}" 
+                                       required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">Prénom</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="first_name" 
+                                       name="first_name" 
+                                       value="{{ user_obj.first_name }}">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Nom</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="last_name" 
+                                       name="last_name" 
+                                       value="{{ user_obj.last_name }}">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="role" class="form-label">Rôle *</label>
+                                <select class="form-select" id="role" name="role" required>
+                                    {% for value, label in role_choices %}
+                                    <option value="{{ value }}" {% if user_obj.role == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>Consultant:</strong> Entrées/Sorties et consultation</li>
+                                        <li><strong>Gestionnaire:</strong> Gestion et validation</li>
+                                        <li><strong>Administrateur:</strong> Administration complète</li>
+                                    </ul>
+                                </small>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Téléphone</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="phone" 
+                                       name="phone" 
+                                       value="{{ user_obj.phone|default:'' }}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       id="is_active" 
+                                       name="is_active" 
+                                       {% if user_obj.is_active %}checked{% endif %}>
+                                <label class="form-check-label" for="is_active">
+                                    Compte actif
+                                </label>
+                                <small class="form-text text-muted d-block">
+                                    Un compte inactif ne peut pas se connecter
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Note:</strong> Pour modifier le mot de passe, l'utilisateur peut le faire depuis son profil ou contactez un administrateur.
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'auth:user_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Retour
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer les modifications
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Informations supplémentaires -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Informations</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Date de création:</strong> {{ user_obj.created_at|date:"d/m/Y à H:i" }}</p>
+                    <p><strong>Dernière connexion:</strong> 
+                        {% if user_obj.last_login %}
+                            {{ user_obj.last_login|date:"d/m/Y à H:i" }}
+                        {% else %}
+                            Jamais connecté
+                        {% endif %}
+                    </p>
+                    <p class="mb-0"><strong>Statut:</strong> 
+                        {% if user_obj.is_active %}
+                            <span class="badge bg-success">Actif</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactif</span>
+                        {% endif %}
+                        {% if user_obj.is_staff %}
+                            <span class="badge bg-primary">Staff</span>
+                        {% endif %}
+                        {% if user_obj.is_superuser %}
+                            <span class="badge bg-danger">Superuser</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

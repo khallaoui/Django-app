@@ -1,0 +1,31 @@
+<!-- Modern Professional Pagination Component -->
+<div class="flex items-center justify-between w-full max-w-xl mx-auto mt-8">
+    <!-- Bouton Précédent -->
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" 
+           class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl shadow-md hover:from-blue-600 hover:to-blue-700 transition-all duration-300">
+            « Précédent
+        </a>
+    {% else %}
+        <button class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl shadow-md opacity-50 cursor-not-allowed" disabled>
+            « Précédent
+        </button>
+    {% endif %}
+
+    <!-- Numéro de page -->
+    <div class="text-sm font-medium text-gray-600">
+        Page <span class="text-blue-600 font-bold">{{ page_obj.number }}</span> sur <span class="font-semibold">{{ page_obj.paginator.num_pages }}</span>
+    </div>
+
+    <!-- Bouton Suivant -->
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" 
+           class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl shadow-md hover:from-green-600 hover:to-green-700 transition-all duration-300">
+            Suivant »
+        </a>
+    {% else %}
+        <button class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl shadow-md opacity-50 cursor-not-allowed" disabled>
+            Suivant »
+        </button>
+    {% endif %}
+</div>

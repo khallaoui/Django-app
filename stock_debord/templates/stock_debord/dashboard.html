@@ -1,51 +1,155 @@
 {% extends 'stock_debord/base.html' %}
 
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configuration for French locale
+    flatpickr.localize(flatpickr.l10ns.fr);
+    
+    // Date picker for date_debut
+    flatpickr("#date_debut", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        locale: "fr",
+        placeholder: "DD/MM/YYYY",
+        onReady: function(selectedDates, dateStr, instance) {
+            instance.element.addEventListener('click', function() {
+                instance.open();
+            });
+        }
+    });
+    
+    // Date picker for date_fin
+    flatpickr("#date_fin", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        locale: "fr",
+        placeholder: "DD/MM/YYYY",
+        onReady: function(selectedDates, dateStr, instance) {
+            instance.element.addEventListener('click', function() {
+                instance.open();
+            });
+        }
+    });
+    
+    // Calendar button handlers
+    document.getElementById('date_debut_btn').addEventListener('click', function() {
+        document.getElementById('date_debut')._flatpickr.open();
+    });
+    
+    document.getElementById('date_fin_btn').addEventListener('click', function() {
+        document.getElementById('date_fin')._flatpickr.open();
+    });
+    
+    // Auto-submit form on Enter key in search field
+    document.getElementById('search_reference').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            this.form.submit();
+        }
+    });
+    
+    // Show active filters
+    {% if search_reference and search_reference != 'None' or date_debut or date_fin %}
+    const activeFilters = [];
+    {% if search_reference and search_reference != 'None' %}
+    activeFilters.push('Recherche: "{{ search_reference }}"');
+    {% endif %}
+    {% if date_debut %}
+    activeFilters.push('Date début: {{ date_debut }}');
+    {% endif %}
+    {% if date_fin %}
+    activeFilters.push('Date fin: {{ date_fin }}');
+    {% endif %}
+    
+    if (activeFilters.length > 0) {
+        console.log('Filtres actifs:', activeFilters.join(', '));
+    }
+    {% endif %}
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
-    <h1 class="mb-4">Stock Magasin Débord</h1>
-
-    <!-- KPI -->
+    <!-- Header Section -->
     <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card bg-primary text-white">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="mb-1 text-primary">
+                        <i class="fas fa-warehouse me-3"></i>Stock Magasin Débord
+                    </h1>
+                    <p class="text-muted mb-0">Gestion intelligente du stock en temps réel</p>
+                </div>
+                <div class="text-end">
+                    <div class="badge bg-light text-dark px-3 py-2">
+                        <i class="fas fa-user-circle me-2"></i>{{ user.username }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h5 class="card-title">Total des bacs</h5>
-                            <h2>{{ total_bacs }}</h2>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-gradient rounded-circle p-3">
+                                <i class="fas fa-boxes text-white fa-lg"></i>
+                            </div>
                         </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-boxes fa-2x"></i>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="card-title text-muted mb-1">Total des Bacs</h6>
+                            <h2 class="mb-0 text-primary fw-bold">{{ total_bacs }}</h2>
+                            <small class="text-success">
+                                <i class="fas fa-arrow-up me-1"></i>En stock
+                            </small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card bg-success text-white">
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h5 class="card-title">Références</h5>
-                            <h2>{{ total_references }}</h2>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-gradient rounded-circle p-3">
+                                <i class="fas fa-list text-white fa-lg"></i>
+                            </div>
                         </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-list fa-2x"></i>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="card-title text-muted mb-1">Références</h6>
+                            <h2 class="mb-0 text-success fw-bold">{{ total_references }}</h2>
+                            <small class="text-info">
+                                <i class="fas fa-tag me-1"></i>Actives
+                            </small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card bg-info text-white">
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h5 class="card-title">Utilisateur</h5>
-                            <h2>{{ user.username }}</h2>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info bg-gradient rounded-circle p-3">
+                                <i class="fas fa-chart-line text-white fa-lg"></i>
+                            </div>
                         </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-user fa-2x"></i>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="card-title text-muted mb-1">Efficacité</h6>
+                            <h2 class="mb-0 text-info fw-bold">98%</h2>
+                            <small class="text-warning">
+                                <i class="fas fa-star me-1"></i>Performance
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -53,66 +157,176 @@
         </div>
     </div>
 
-    <!-- Boutons d'action -->
+    <!-- Action Cards -->
     <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pb-0">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-bolt me-2 text-warning"></i>Actions Rapides
+                    </h5>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">Actions</h5>
-                    <div class="btn-group-vertical btn-group-lg d-md-none w-100" role="group">
-                        <a href="{% url 'stock_debord:ajouter_reference' %}" class="btn btn-primary mb-2">
-                            <i class="fas fa-plus me-2"></i>Ajouter Référence
-                        </a>
-                        <a href="{% url 'stock_debord:vider_travee' %}" class="btn btn-warning mb-2">
-                            <i class="fas fa-trash me-2"></i>Vider travée
-                        </a>
-                        <a href="{% url 'stock_debord:historique' %}" class="btn btn-info mb-2">
-                            <i class="fas fa-history me-2"></i>Historique E/S
-                        </a>
-                        <a href="{% url 'stock_debord:exporter_excel' %}" class="btn btn-success mb-2">
-                            <i class="fas fa-file-excel me-2"></i>Exporter Excel
-                        </a>
-                        <a href="{% url 'stock_debord:imprimer_stock' %}" class="btn btn-secondary mb-2">
-                            <i class="fas fa-print me-2"></i>Imprimer
-                        </a>
-                        <a href="{% url 'stock_debord:saisie_sortie' %}" class="btn btn-danger">
-                            <i class="fas fa-sign-out-alt me-2"></i>Valider Sortie
-                        </a>
+                    <!-- Mobile Actions -->
+                    <div class="row g-3 d-md-none">
+                        <!-- Actions disponibles pour tous (Consultants, Gestionnaires, Admins) -->
+                        <div class="col-6">
+                            <a href="{% url 'stock_debord:ajouter_reference' %}" class="btn btn-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                                <i class="fas fa-plus fa-2x mb-2"></i>
+                                <span class="fw-bold">Ajouter</span>
+                                <small>Référence</small>
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{% url 'stock_debord:saisie_sortie' %}" class="btn btn-danger w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                                <i class="fas fa-sign-out-alt fa-2x mb-2"></i>
+                                <span class="fw-bold">Valider</span>
+                                <small>Sortie</small>
+                            </a>
+                        </div>
+                        <!-- Actions réservées aux Gestionnaires et Admins -->
+                        {% if user.is_gestionnaire or user.is_admin %}
+                        <div class="col-6">
+                            <a href="{% url 'stock_debord:historique' %}" class="btn btn-info w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                                <i class="fas fa-history fa-2x mb-2"></i>
+                                <span class="fw-bold">Historique</span>
+                                <small>E/S</small>
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{% url 'stock_debord:exporter_excel' %}" class="btn btn-success w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                                <i class="fas fa-file-excel fa-2x mb-2"></i>
+                                <span class="fw-bold">Exporter</span>
+                                <small>Excel</small>
+                            </a>
+                        </div>
+                        {% endif %}
                     </div>
+                    
+                    <!-- Desktop Actions -->
                     <div class="d-none d-md-block">
-                        <a href="{% url 'stock_debord:ajouter_reference' %}" class="btn btn-primary me-2">
-                            <i class="fas fa-plus me-2"></i>Ajouter Référence
-                        </a>
-                        <a href="{% url 'stock_debord:vider_travee' %}" class="btn btn-warning me-2">
-                            <i class="fas fa-trash me-2"></i>Vider travée
-                        </a>
-                        <a href="{% url 'stock_debord:historique' %}" class="btn btn-info me-2">
-                            <i class="fas fa-history me-2"></i>Historique E/S
-                        </a>
-                        <a href="{% url 'stock_debord:exporter_excel' %}" class="btn btn-success me-2">
-                            <i class="fas fa-file-excel me-2"></i>Exporter Excel
-                        </a>
-                        <a href="{% url 'stock_debord:imprimer_stock' %}" class="btn btn-secondary me-2">
-                            <i class="fas fa-print me-2"></i>Imprimer
-                        </a>
-                        <a href="{% url 'stock_debord:saisie_sortie' %}" class="btn btn-danger">
-                            <i class="fas fa-sign-out-alt me-2"></i>Valider Sortie
-                        </a>
+                        <div class="row g-3">
+                            <!-- Actions disponibles pour tous (Consultants, Gestionnaires, Admins) -->
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <a href="{% url 'stock_debord:ajouter_reference' %}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4 text-decoration-none">
+                                    <i class="fas fa-plus fa-2x mb-2 text-primary"></i>
+                                    <span class="fw-bold text-primary">Ajouter</span>
+                                    <small class="text-muted">Référence</small>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <a href="{% url 'stock_debord:saisie_sortie' %}" class="btn btn-outline-danger w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4 text-decoration-none">
+                                    <i class="fas fa-sign-out-alt fa-2x mb-2 text-danger"></i>
+                                    <span class="fw-bold text-danger">Valider</span>
+                                    <small class="text-muted">Sortie</small>
+                                </a>
+                            </div>
+                            <!-- Actions réservées aux Gestionnaires et Admins -->
+                            {% if user.is_gestionnaire or user.is_admin %}
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <a href="{% url 'stock_debord:historique' %}" class="btn btn-outline-info w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4 text-decoration-none">
+                                    <i class="fas fa-history fa-2x mb-2 text-info"></i>
+                                    <span class="fw-bold text-info">Historique</span>
+                                    <small class="text-muted">E/S</small>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <a href="{% url 'stock_debord:exporter_excel' %}" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4 text-decoration-none">
+                                    <i class="fas fa-file-excel fa-2x mb-2 text-success"></i>
+                                    <span class="fw-bold text-success">Exporter</span>
+                                    <small class="text-muted">Excel</small>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <a href="{% url 'stock_debord:imprimer_stock' %}" class="btn btn-outline-secondary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4 text-decoration-none">
+                                    <i class="fas fa-print fa-2x mb-2 text-secondary"></i>
+                                    <span class="fw-bold text-secondary">Imprimer</span>
+                                    <small class="text-muted">Stock</small>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <a href="{% url 'stock_debord:gestion_references' %}" class="btn btn-outline-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4 text-decoration-none">
+                                    <i class="fas fa-cogs fa-2x mb-2 text-warning"></i>
+                                    <span class="fw-bold text-warning">Gérer</span>
+                                    <small class="text-muted">Références</small>
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Barre de recherche -->
+    <!-- Search and Filters -->
     <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-gradient bg-light border-0">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-search me-2 text-primary"></i>Recherche et Filtres
+                    </h5>
+                </div>
                 <div class="card-body">
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
-                        <input type="text" class="form-control" placeholder="Chercher une référence..." id="searchInput">
-                    </div>
+                    <form method="get" class="row g-3">
+                        <div class="col-lg-4 col-md-6">
+                            <label for="search_reference" class="form-label fw-bold">
+                                <i class="fas fa-search me-1 text-muted"></i>Rechercher une référence
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="search_reference" name="search_reference" 
+                                       value="{% if search_reference and search_reference != 'None' %}{{ search_reference }}{% endif %}" 
+                                       placeholder="Référence, emplacement, fournisseur...">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label for="date_debut" class="form-label fw-bold">
+                                <i class="fas fa-calendar-alt me-1 text-muted"></i>Date de début
+                            </label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="date_debut" name="date_debut" 
+                                       value="{% if date_debut and date_debut != 'None' %}{{ date_debut }}{% endif %}" 
+                                       placeholder="DD/MM/YYYY" autocomplete="off">
+                                <button class="btn btn-outline-primary" type="button" id="date_debut_btn">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>Cliquez sur le calendrier ou tapez la date
+                            </small>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label for="date_fin" class="form-label fw-bold">
+                                <i class="fas fa-calendar-alt me-1 text-muted"></i>Date de fin
+                            </label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="date_fin" name="date_fin" 
+                                       value="{% if date_fin and date_fin != 'None' %}{{ date_fin }}{% endif %}" 
+                                       placeholder="DD/MM/YYYY" autocomplete="off">
+                                <button class="btn btn-outline-primary" type="button" id="date_fin_btn">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>Cliquez sur le calendrier ou tapez la date
+                            </small>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <label class="form-label fw-bold text-white">Actions</label>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search me-1"></i>Rechercher
+                                </button>
+                                <a href="{% url 'stock_debord:dashboard' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i>Effacer
+                                </a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -122,29 +336,56 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Stock Actuel</h5>
+                    {% if is_paginated %}
+                    <small class="text-muted">
+                        Affichage de {{ page_obj.start_index }} à {{ page_obj.end_index }} sur {{ page_obj.paginator.count }} références
+                    </small>
+                    {% else %}
+                    <small class="text-muted">
+                        Affichage de toutes les {{ references.count }} références
+                    </small>
+                    {% endif %}
+                    {% if debug_dates %}
+                    <div class="mt-2">
+                        <div class="alert alert-info alert-sm py-2 px-3 mb-0">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <small class="mb-0">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        <strong>Filtres actifs:</strong>
+                                        {% if debug_date_debut %}
+                                            Date début: {{ debug_date_debut }}
+                                        {% endif %}
+                                        {% if debug_date_fin %}
+                                            | Date fin: {{ debug_date_fin }}
+                                        {% endif %}
+                                        | Résultats: {{ debug_queryset_count }}/{{ debug_total_references }}
+                                    </small>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <small class="text-muted">
+                                        <i class="fas fa-database me-1"></i>
+                                        {{ debug_earliest_date|date:"d/m/Y" }} - {{ debug_latest_date|date:"d/m/Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="card-body">
                     {% include 'stock_debord/partials/table_stock.html' with references=references %}
                 </div>
+                {% if is_paginated %}
+                <div class="card-footer">
+                    <!-- Enhanced Pagination with new styles -->
+                    {% include 'stock_debord/partials/pagination_dashboard.html' %}
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-// Fonctionnalité de recherche
-document.getElementById('searchInput').addEventListener('keyup', function() {
-    const searchText = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#stockTable tbody tr');
-    
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(searchText) ? '' : 'none';
-    });
-});
-</script>
 {% endblock %}

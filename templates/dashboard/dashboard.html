@@ -1,187 +1,330 @@
-{% extends 'base.html' %}
+{% extends 'stock_debord/base.html' %}
 {% load static %}
 
-{% block title %}Dashboard - Gestion Alertes{% endblock %}
-
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-            <div class="position-sticky pt-3">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'dashboard' %}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
+<!-- En-tête du Dashboard -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-3">
+            <i class="fas fa-tachometer-alt me-2"></i>
+            Dashboard - Gestion de Stock
+        </h1>
+        <p class="text-muted">Vue d'ensemble de votre système de gestion de stock Stellantis</p>
+    </div>
+</div>
+
+<!-- Informations Utilisateur -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-info d-flex align-items-center">
+            <i class="fas fa-user-circle fa-2x me-3"></i>
+            <div>
+                <strong>Bienvenue, {{ user.get_full_name|default:user.username }}!</strong><br>
+                <small>Connecté en tant que: 
+                    <span class="badge 
+                        {% if user.role == 'admin' %}bg-danger
+                        {% elif user.role == 'gestionnaire' %}bg-warning
+                        {% else %}bg-info{% endif %}">
+                        {{ user.get_role_display }}
+                    </span>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistiques Principales -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-primary shadow h-100">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Références
+                        </div>
+                        <div class="h4 mb-0 font-weight-bold">{{ total_references }}</div>
+                        <small class="text-muted">Actives</small>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-list fa-3x text-primary opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-success shadow h-100">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Total des Bacs
+                        </div>
+                        <div class="h4 mb-0 font-weight-bold">{{ total_bacs }}</div>
+                        <small class="text-muted">En stock</small>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-cube fa-3x text-success opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-info shadow h-100">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Travées Occupées
+                        </div>
+                        <div class="h4 mb-0 font-weight-bold">{{ travees_occupees }}</div>
+                        <small class="text-muted">Zones actives</small>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-warehouse fa-3x text-info opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-warning shadow h-100">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Mouvements Aujourd'hui
+                        </div>
+                        <div class="h4 mb-0 font-weight-bold">{{ mouvements_aujourdhui }}</div>
+                        <small class="text-muted">Entrées/Sorties</small>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-exchange-alt fa-3x text-warning opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Actions Rapides -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Actions Rapides</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'stock_debord:dashboard' %}" class="btn btn-outline-primary w-100 btn-lg">
+                            <i class="fas fa-boxes d-block mb-2" style="font-size: 2rem;"></i>
+                            Gestion Stock
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'create_alerte' %}">
-                            <i class="fas fa-plus-circle"></i> Créer Alerte
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'stock_debord:ajouter_reference' %}" class="btn btn-outline-success w-100 btn-lg">
+                            <i class="fas fa-plus-circle d-block mb-2" style="font-size: 2rem;"></i>
+                            Ajouter Référence
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'list_alertes' %}">
-                            <i class="fas fa-list"></i> Liste Alertes
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'stock_debord:saisie_sortie' %}" class="btn btn-outline-warning w-100 btn-lg">
+                            <i class="fas fa-dolly d-block mb-2" style="font-size: 2rem;"></i>
+                            Saisie Sortie
                         </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Dashboard</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group me-2">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Actualiser</button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'stock_debord:historique' %}" class="btn btn-outline-info w-100 btn-lg">
+                            <i class="fas fa-history d-block mb-2" style="font-size: 2rem;"></i>
+                            Historique
+                        </a>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
-            <!-- Métriques -->
-            <div class="row mb-4">
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-primary shadow h-100 py-2 card-metric">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Alertes En Cours
+<!-- Références Récentes -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Références Récentes</h5>
+                <a href="{% url 'stock_debord:gestion_references' %}" class="btn btn-sm btn-primary">
+                    Voir toutes les références <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="fas fa-tag me-1"></i>Référence</th>
+                                <th><i class="fas fa-map-marker-alt me-1"></i>Emplacement SM</th>
+                                <th><i class="fas fa-cube me-1"></i>Nombre de Bacs</th>
+                                <th><i class="fas fa-road me-1"></i>Travée Débord</th>
+                                <th><i class="fas fa-truck me-1"></i>Fournisseur</th>
+                                <th><i class="fas fa-calendar me-1"></i>Date Entrée</th>
+                                <th class="text-center"><i class="fas fa-cogs me-1"></i>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reference in references %}
+                            <tr>
+                                <td><strong>{{ reference.reference }}</strong></td>
+                                <td>{{ reference.emplacement_sm }}</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ reference.nombre_bacs }}</span>
+                                </td>
+                                <td>{{ reference.travee_debord }}</td>
+                                <td>{{ reference.fournisseur }}</td>
+                                <td>{{ reference.date_entree|date:"d/m/Y H:i" }}</td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{% url 'stock_debord:modifier_reference' reference.id %}" 
+                                           class="btn btn-outline-primary" 
+                                           title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'stock_debord:saisie_sortie' %}" 
+                                           class="btn btn-outline-warning" 
+                                           title="Sortie">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        </a>
                                     </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ alertes_en_cours }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    Aucune référence récente
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-success shadow h-100 py-2 card-metric">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        Alertes Livrées
-                                    </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ alertes_livrees }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-check-circle fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
+<!-- Permissions de l'utilisateur -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow {% if user.role == 'admin' %}border-left-danger{% elif user.role == 'gestionnaire' %}border-left-warning{% else %}border-left-info{% endif %}">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-shield-alt me-2"></i>
+                    Vos Permissions ({{ user.get_role_display }})
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-success"><i class="fas fa-check-circle me-1"></i> Actions Autorisées:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Consulter le stock</li>
+                            {% if user.role in 'consultant,gestionnaire,admin' %}
+                            <li><i class="fas fa-check text-success me-2"></i>Effectuer entrées/sorties</li>
+                            {% endif %}
+                            {% if user.role in 'gestionnaire,admin' %}
+                            <li><i class="fas fa-check text-success me-2"></i>Gérer le magasin</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Valider les mouvements</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Superviser les opérations</li>
+                            {% endif %}
+                            {% if user.role == 'admin' %}
+                            <li><i class="fas fa-check text-success me-2"></i>Gérer les utilisateurs</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Accès admin complet</li>
+                            {% endif %}
+                        </ul>
                     </div>
-                </div>
-
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-info shadow h-100 py-2 card-metric">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                        FLC Envoyés
-                                    </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ alertes_flc }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-paper-plane fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
+                    <div class="col-md-6">
+                        {% if user.role == 'admin' %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-crown me-2"></i>
+                            <strong>Accès Administrateur</strong><br>
+                            Vous avez accès à toutes les fonctionnalités du système.
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-warning shadow h-100 py-2 card-metric">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                        Total Alertes
-                                    </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_alertes }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
+                        {% elif user.role == 'gestionnaire' %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-user-tie me-2"></i>
+                            <strong>Accès Gestionnaire</strong><br>
+                            Vous pouvez gérer le stock et superviser les opérations.
                         </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-user me-2"></i>
+                            <strong>Accès Consultant</strong><br>
+                            Vous pouvez consulter et effectuer des mouvements de stock.
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-
-            <!-- Alertes récentes -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Alertes Récentes</h6>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-alerts" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Référence</th>
-                                    <th>Zone Kit</th>
-                                    <th>Bacs Restants</th>
-                                    <th>Statut</th>
-                                    <th>Date Création</th>
-                                    <th>Créateur</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for alerte in alertes_recentes %}
-                                <tr>
-                                    <td>{{ alerte.reference }}</td>
-                                    <td>{{ alerte.zone_kit }}</td>
-                                    <td>{{ alerte.nombre_bacs }}</td>
-                                    <td>
-                                        <span class="badge bg-{% if alerte.statut == 'en_cours' %}warning{% elif alerte.statut == 'livre' %}success{% elif alerte.statut == 'flc' %}info{% else %}secondary{% endif %}">
-                                            {{ alerte.get_statut_display }}
-                                        </span>
-                                    </td>
-                                    <td>{{ alerte.date_creation|date:"d/m/Y H:i" }}</td>
-                                    <td>{{ alerte.createur.username }}</td>
-                                    <td>
-                                        {% if alerte.statut == 'en_cours' %}
-                                        <button class="btn btn-sm btn-success btn-update-status btn-status" 
-                                                data-alerte-id="{{ alerte.id }}" 
-                                                data-status="livre">
-                                            Livré
-                                        </button>
-                                        <button class="btn btn-sm btn-info btn-update-status btn-status" 
-                                                data-alerte-id="{{ alerte.id }}" 
-                                                data-status="flc">
-                                            FLC
-                                        </button>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="7" class="text-center">Aucune alerte récente</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
 </div>
 {% endblock %}
 
-{% block extra_js %}
+{% block scripts %}
+<style>
+    .border-left-primary {
+        border-left: 4px solid #4e73df !important;
+    }
+    .border-left-success {
+        border-left: 4px solid #1cc88a !important;
+    }
+    .border-left-info {
+        border-left: 4px solid #36b9cc !important;
+    }
+    .border-left-warning {
+        border-left: 4px solid #f6c23e !important;
+    }
+    .border-left-danger {
+        border-left: 4px solid #e74a3b !important;
+    }
+    .opacity-25 {
+        opacity: 0.25;
+    }
+    .card {
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .btn-lg i {
+        transition: transform 0.2s;
+    }
+    .btn-lg:hover i {
+        transform: scale(1.1);
+    }
+</style>
+
 <script>
-    // Auto-refresh des métriques toutes les 30 secondes
-    setInterval(function() {
-        $('.metric-card').load(window.location.pathname + ' .metric-card > *');
-    }, 30000);
+    // Animation au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animer les cartes de statistiques
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.5s ease';
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 50);
+            }, index * 100);
+        });
+    });
 </script>
 {% endblock %}
