@@ -1,13 +1,13 @@
 readme_content = """# Django Application – Alert Management
 
-##  Description
+## 📋 Description
 
 A Django web application for managing alerts in a logistics environment.
 The application allows users to create, track, and manage alerts related to stock levels and kit zones.
 
 ---
 
-##  Architecture
+## 🏗️ Architecture
 
 ### Project Structure
 
@@ -56,7 +56,7 @@ mon_projet/
 
 ---
 
-##  Installation & Configuration
+## 🚀 Installation & Configuration
 
 ### Prerequisites
 - Python 3.8+
@@ -113,7 +113,7 @@ Access the app at: http://127.0.0.1:8000/
 
 ---
 
-##  Usage
+## 👥 Usage
 
 ### User Roles
 1. **Administrator:** Full access to all features
@@ -168,7 +168,7 @@ DB_PORT=3306
 
 ---
 
-##  User Interface
+## 🎨 User Interface
 
 ### Frontend Technologies
 - **Bootstrap 5** – Responsive CSS framework
@@ -185,7 +185,7 @@ DB_PORT=3306
 
 ---
 
-##  Database
+## 📊 Database
 
 ### Main Models
 
@@ -213,7 +213,7 @@ DB_PORT=3306
 
 ---
 
-##  Testing & Verification
+## 🧪 Testing & Verification
 
 ### Verification Script
 python check_app.py
@@ -230,7 +230,7 @@ python manage.py test
 
 ---
 
-##  Deployment
+## 🚀 Deployment
 
 ### Preparing for Production
 1. Set DEBUG = False in settings.py
@@ -248,7 +248,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 ---
 
-##  API & Extensions
+## 📝 API & Extensions
 
 ### Main URLs
 - `/` – Dashboard
@@ -267,7 +267,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 ---
 
-##  Troubleshooting
+## 🐛 Troubleshooting
 
 ### Common Issues
 1. **MySQL Connection Error**
@@ -286,7 +286,22 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
    - Ensure {% csrf_token %} is in forms
    - Check CSRF settings in settings.py
 
+---
 
+## 📞 Support
+For questions or issues:
+1. Check Django logs
+2. Run check_app.py
+3. Review Django documentation
+4. Check project GitHub issues
+
+---
+
+## 📄 License
+This project is licensed under the **MIT License**.
+See the LICENSE file for more details.
+
+---
 
 **Version:** 1.0.0
 **Last Updated:** December 2024
