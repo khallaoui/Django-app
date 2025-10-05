@@ -303,7 +303,7 @@ See the LICENSE file for more details.
 
 ---
 
-**Version:** 1.0.0
-**Last Updated:** December 2024
+**Version:** 1.0.0  
+**Last Updated:** December 2024  
 **Compatibility:** Django 4.2+, Python 3.8+
 """
